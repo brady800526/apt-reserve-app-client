@@ -13,8 +13,8 @@ const App = () => {
   const [error, setError] = useState("");
   const [successMsg, setSuccessMsg] = useState("");
 
-  // TODO: Replace 'localhost' with your computer's IP (e.g., "http://192.168.1.15:5000")
-  const API_BASE_URL = "http://localhost:5000";
+  const API_BASE_URL =
+    import.meta.env.VITE_API_BASE_URL || "http://localhost:5000";
 
   // Mock Listing Data
   const listing = {
