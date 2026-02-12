@@ -1,12 +1,12 @@
+import { Amplify } from "aws-amplify";
 import { generateClient } from "aws-amplify/api";
-import axios from "axios";
 import { useEffect, useState } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import outputs from "../amplify_outputs.json";
 import "./App.css";
-// import outputs from "./amplify_outputs.json";
 
-// Amplify.configure(outputs);
+Amplify.configure(outputs);
 
 const client = generateClient();
 
@@ -23,9 +23,6 @@ const App = () => {
   const [email, setEmail] = useState("");
   const [error, setError] = useState("");
   const [successMsg, setSuccessMsg] = useState("");
-
-  const API_BASE_URL =
-    import.meta.env.VITE_API_BASE_URL || "http://localhost:5000";
 
   // Mock Listing Data
   const listing = {
@@ -51,8 +48,18 @@ const App = () => {
 
   const fetchReservations = async () => {
     try {
-      const res = await axios.get(`${API_BASE_URL}/api/reservations`);
-      setReservations(res.data);
+      const query = `
+        query ListReservations {
+          listReservations {
+            items {
+              startDate
+              endDate
+            }
+          }
+        }
+      `;
+      const res = await client.graphql({ query });
+      setReservations(res.data.listReservations.items);
     } catch (err) {
       console.error("Error fetching reservations", err);
     }
@@ -104,8 +111,8 @@ const App = () => {
 
     try {
       const mutation = `
-        mutation AddReservation($name: String!, $email: String!, $startDate: String!, $endDate: String!) {
-          addReservation(name: $name, email: $email, startDate: $startDate, endDate: $endDate) {
+        mutation CreateReservation($firstName: String!, $lastName: String!, $email: String!, $startDate: String!, $endDate: String!) {
+          createReservation(firstName: $firstName, lastName: $lastName, email: $email, startDate: $startDate, endDate: $endDate) {
             id
           }
         }
@@ -116,8 +123,8 @@ const App = () => {
           firstName,
           lastName,
           email,
-          startDate,
-          endDate,
+          startDate: startDate.toISOString(),
+          endDate: endDate.toISOString(),
         },
       });
       setSuccessMsg("Reserved successfully!");
