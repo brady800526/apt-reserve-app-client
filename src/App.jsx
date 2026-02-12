@@ -145,8 +145,7 @@ const App = () => {
       setLastName("");
       setEmail("");
     } catch (err) {
-      console.log(err.message);
-      console.log(err);
+      console.error(err);
       let errorMessage = "Booking failed";
       if (err?.errors && Array.isArray(err.errors) && err.errors.length > 0) {
         errorMessage = err.errors[0].message;

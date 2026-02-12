@@ -14,6 +14,7 @@ const schema = a.schema({
       email: a.string().required(),
       startDate: a.string().required(),
       endDate: a.string().required(),
+      numberOfPeople: a.integer().required(),
     })
     .authorization((allow) => [allow.guest()]),
 });
