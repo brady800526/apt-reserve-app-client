@@ -215,6 +215,44 @@ hr {
   -webkit-text-fill-color: #222 !important;
 }
 
+.guest-selector {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 12px;
+}
+
+.guest-btn {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 1px solid #b0b0b0;
+  background: transparent;
+  color: #717171;
+  font-size: 16px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+}
+
+.guest-btn:disabled {
+  opacity: 0.2;
+  cursor: not-allowed;
+  border-color: #ebebeb;
+}
+
+.guest-btn:hover:not(:disabled) {
+  border-color: #222;
+  color: #222;
+}
+
+.guest-count {
+  font-size: 16px;
+  font-weight: 400;
+}
+
 .reserve-btn {
   width: 100%;
   background: #ff385c; /* Airbnb Red/Pink */

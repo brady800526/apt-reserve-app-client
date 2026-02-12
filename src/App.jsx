@@ -21,6 +21,7 @@ const App = () => {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
+  const [numberOfPeople, setNumberOfPeople] = useState(1);
   const [error, setError] = useState("");
   const [successMsg, setSuccessMsg] = useState("");
 
@@ -111,29 +112,47 @@ const App = () => {
 
     try {
       const mutation = `
-        mutation CreateReservation($firstName: String!, $lastName: String!, $email: String!, $startDate: String!, $endDate: String!) {
-          createReservation(firstName: $firstName, lastName: $lastName, email: $email, startDate: $startDate, endDate: $endDate) {
+        mutation CreateReservation($input: CreateReservationInput!) {
+          createReservation(input: $input) {
             id
           }
         }
       `;
-      await client.graphql({
+      const res = await client.graphql({
         query: mutation,
         variables: {
-          firstName,
-          lastName,
-          email,
-          startDate: startDate.toISOString(),
-          endDate: endDate.toISOString(),
+          input: {
+            firstName,
+            lastName,
+            email,
+            startDate: startDate.toISOString(),
+            endDate: endDate.toISOString(),
+            numberOfPeople,
+          },
         },
       });
+      if (res.errors && Array.isArray(res.errors) && res.errors.length > 0) {
+        const errorMessage = res.errors[0].message;
+        setError(errorMessage);
+        console.error("GraphQL Error:", errorMessage);
+        return;
+      }
+
+      console.log("GraphQL Response:", res);
       setSuccessMsg("Reserved successfully!");
       fetchReservations();
       setFirstName("");
       setLastName("");
       setEmail("");
     } catch (err) {
-      const errorMessage = err.response?.data?.error || "Booking failed";
+      console.log(err.message);
+      console.log(err);
+      let errorMessage = "Booking failed";
+      if (err?.errors && Array.isArray(err.errors) && err.errors.length > 0) {
+        errorMessage = err.errors[0].message;
+      } else if (err.message) {
+        errorMessage = err.message;
+      }
       setError(errorMessage);
     }
   };
@@ -285,6 +304,35 @@ const App = () => {
                       className="clean-text-input"
                       style={{ marginTop: "5px" }}
                     />
+                  </div>
+                  <div
+                    className="guest-box"
+                    style={{ borderTop: "1px solid #b0b0b0" }}
+                  >
+                    <label>Number of People</label>
+                    <div className="guest-selector">
+                      <button
+                        type="button"
+                        className="guest-btn"
+                        onClick={() =>
+                          setNumberOfPeople(Math.max(1, numberOfPeople - 1))
+                        }
+                        disabled={numberOfPeople <= 1}
+                      >
+                        -
+                      </button>
+                      <span className="guest-count">{numberOfPeople}</span>
+                      <button
+                        type="button"
+                        className="guest-btn"
+                        onClick={() =>
+                          setNumberOfPeople(Math.min(2, numberOfPeople + 1))
+                        }
+                        disabled={numberOfPeople >= 2}
+                      >
+                        +
+                      </button>
+                    </div>
                   </div>
                 </div>
 
