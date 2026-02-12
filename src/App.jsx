@@ -8,7 +8,8 @@ const App = () => {
   const [reservations, setReservations] = useState([]);
   const [startDate, setStartDate] = useState(new Date());
   const [endDate, setEndDate] = useState(new Date());
-  const [name, setName] = useState("");
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
   const [error, setError] = useState("");
   const [successMsg, setSuccessMsg] = useState("");
@@ -75,6 +76,11 @@ const App = () => {
     setError("");
     setSuccessMsg("");
 
+    if (!firstName || !lastName) {
+      setError("Please enter first and last name");
+      return;
+    }
+
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
       setError("Please enter a valid email address.");
@@ -83,19 +89,26 @@ const App = () => {
 
     try {
       await axios.post(`${API_BASE_URL}/api/reserve`, {
-        name,
+        name: `${firstName} ${lastName}`,
         email,
         startDate,
         endDate,
       });
       setSuccessMsg("Reserved successfully!");
       fetchReservations();
-      setName("");
+      setFirstName("");
+      setLastName("");
       setEmail("");
     } catch (err) {
-      setError(err.response?.data?.error || "Booking failed");
+      const errorMessage = err.response?.data?.error || "Booking failed";
+      setError(errorMessage);
     }
   };
+
+  const maxCheckoutDate = startDate ? new Date(startDate) : null;
+  if (maxCheckoutDate) {
+    maxCheckoutDate.setDate(maxCheckoutDate.getDate() + 14);
+  }
 
   return (
     <div className="app-container">
@@ -166,14 +179,26 @@ const App = () => {
                 </div>
               </div>
 
-              <form onSubmit={handleSubmit}>
+              <form onSubmit={handleSubmit} noValidate>
                 <div className="booking-inputs">
                   <div className="date-row">
                     <div className="date-box border-right">
                       <label>CHECK-IN</label>
                       <DatePicker
                         selected={startDate}
-                        onChange={(date) => setStartDate(date)}
+                        onChange={(date) => {
+                          setStartDate(date);
+                          const newMaxDate = new Date(date);
+                          newMaxDate.setDate(newMaxDate.getDate() + 14);
+
+                          if (date >= endDate) {
+                            const newEndDate = new Date(date);
+                            newEndDate.setDate(newEndDate.getDate() + 1);
+                            setEndDate(newEndDate);
+                          } else if (endDate > newMaxDate) {
+                            setEndDate(newMaxDate);
+                          }
+                        }}
                         selectsStart
                         startDate={startDate}
                         endDate={endDate}
@@ -191,6 +216,7 @@ const App = () => {
                         startDate={startDate}
                         endDate={endDate}
                         minDate={startDate}
+                        maxDate={maxCheckoutDate}
                         excludeDates={getBookedDates()}
                         className="clean-date-input"
                       />
@@ -200,18 +226,24 @@ const App = () => {
                     <label>GUEST INFO</label>
                     <input
                       type="text"
-                      value={name}
-                      onChange={(e) => setName(e.target.value)}
-                      placeholder="Full Name"
-                      required
+                      value={firstName}
+                      onChange={(e) => setFirstName(e.target.value)}
+                      placeholder="First Name"
                       className="clean-text-input"
+                    />
+                    <input
+                      type="text"
+                      value={lastName}
+                      onChange={(e) => setLastName(e.target.value)}
+                      placeholder="Last Name"
+                      className="clean-text-input"
+                      style={{ marginTop: "5px" }}
                     />
                     <input
                       type="email"
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
                       placeholder="Email Address"
-                      required
                       className="clean-text-input"
                       style={{ marginTop: "5px" }}
                     />
