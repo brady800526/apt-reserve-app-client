@@ -1,20 +1,23 @@
-import { Amplify } from "aws-amplify";
 import { generateClient } from "aws-amplify/api";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import "./App.css";
-import outputs from "./amplify_outputs.json";
+// import outputs from "./amplify_outputs.json";
 
-Amplify.configure(outputs);
+// Amplify.configure(outputs);
 
 const client = generateClient();
 
 const App = () => {
   const [reservations, setReservations] = useState([]);
   const [startDate, setStartDate] = useState(new Date());
-  const [endDate, setEndDate] = useState(new Date());
+  const [endDate, setEndDate] = useState(() => {
+    const date = new Date();
+    date.setDate(date.getDate() + 1);
+    return date;
+  });
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
