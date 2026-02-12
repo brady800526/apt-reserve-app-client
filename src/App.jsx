@@ -1,8 +1,15 @@
+import { Amplify } from "aws-amplify";
+import { generateClient } from "aws-amplify/api";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import "./App.css";
+import outputs from "./amplify_outputs.json";
+
+Amplify.configure(outputs);
+
+const client = generateClient();
 
 const App = () => {
   const [reservations, setReservations] = useState([]);
@@ -81,6 +88,11 @@ const App = () => {
       return;
     }
 
+    if (!email) {
+      setError("Please enter email address");
+      return;
+    }
+
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
       setError("Please enter a valid email address.");
@@ -88,11 +100,22 @@ const App = () => {
     }
 
     try {
-      await axios.post(`${API_BASE_URL}/api/reserve`, {
-        name: `${firstName} ${lastName}`,
-        email,
-        startDate,
-        endDate,
+      const mutation = `
+        mutation AddReservation($name: String!, $email: String!, $startDate: String!, $endDate: String!) {
+          addReservation(name: $name, email: $email, startDate: $startDate, endDate: $endDate) {
+            id
+          }
+        }
+      `;
+      await client.graphql({
+        query: mutation,
+        variables: {
+          firstName,
+          lastName,
+          email,
+          startDate,
+          endDate,
+        },
       });
       setSuccessMsg("Reserved successfully!");
       fetchReservations();
@@ -104,6 +127,11 @@ const App = () => {
       setError(errorMessage);
     }
   };
+
+  const minCheckoutDate = startDate ? new Date(startDate) : null;
+  if (minCheckoutDate) {
+    minCheckoutDate.setDate(minCheckoutDate.getDate() + 1);
+  }
 
   const maxCheckoutDate = startDate ? new Date(startDate) : null;
   if (maxCheckoutDate) {
@@ -215,7 +243,7 @@ const App = () => {
                         selectsEnd
                         startDate={startDate}
                         endDate={endDate}
-                        minDate={startDate}
+                        minDate={minCheckoutDate}
                         maxDate={maxCheckoutDate}
                         excludeDates={getBookedDates()}
                         className="clean-date-input"

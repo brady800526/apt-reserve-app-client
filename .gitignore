@@ -10,3 +10,8 @@ dist
 
 # System files
 .DS_Store
+
+# amplify
+.amplify
+amplify_outputs*
+amplifyconfiguration*
