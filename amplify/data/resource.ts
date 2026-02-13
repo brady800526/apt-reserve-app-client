@@ -1,4 +1,5 @@
 import { type ClientSchema, a, defineData } from "@aws-amplify/backend";
+import { sendEmail } from "../functions/send-email/resource";
 
 /*== STEP 1 ===============================================================
 The section below creates a Todo database table with a "content" field. Try
@@ -17,6 +18,17 @@ const schema = a.schema({
       numberOfPeople: a.integer().required(),
     })
     .authorization((allow) => [allow.guest()]),
+
+  sendEmail: a
+    .mutation()
+    .arguments({
+      to: a.string().required(),
+      subject: a.string().required(),
+      body: a.string().required(),
+    })
+    .returns(a.string())
+    .authorization((allow) => [allow.guest()])
+    .handler(a.handler.function(sendEmail)),
 });
 
 export type Schema = ClientSchema<typeof schema>;

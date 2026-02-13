@@ -2,6 +2,7 @@ import { Amplify } from "aws-amplify";
 import { generateClient } from "aws-amplify/api";
 import { FormEvent, useEffect, useState } from "react";
 import outputs from "../../amplify_outputs.json";
+import { useEmailViewModel } from "./useEmailViewModel";
 
 Amplify.configure(outputs);
 
@@ -21,6 +22,7 @@ export const useReserveViewModel = () => {
   const [numberOfPeople, setNumberOfPeople] = useState(1);
   const [error, setError] = useState("");
   const [successMsg, setSuccessMsg] = useState("");
+  const { sendConfirmationEmail } = useEmailViewModel();
 
   // Mock Listing Data
   const listing = {
@@ -142,6 +144,20 @@ export const useReserveViewModel = () => {
       }
 
       console.log("GraphQL Response:", res);
+      const emailSent = await sendConfirmationEmail(
+        email,
+        firstName,
+        listing.title,
+        startDate,
+        endDate,
+      );
+      if (emailSent) {
+        setSuccessMsg("Reserved successfully! Confirmation email sent.");
+      } else {
+        setSuccessMsg(
+          "Reserved successfully! (Email failed to send - check SES verification)",
+        );
+      }
       setSuccessMsg("Reserved successfully!");
       fetchReservations();
       setFirstName("");
