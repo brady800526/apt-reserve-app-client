@@ -1,5 +1,8 @@
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import { useReserveViewModel } from "../../../view-models/useReservationViewModel";
+
+type ViewModel = ReturnType<typeof useReserveViewModel>;
 
 export const ReservationFormView = ({
   listing,
@@ -23,16 +26,16 @@ export const ReservationFormView = ({
   minCheckoutDate,
   maxCheckoutDate,
   handleStartDateChange,
-}) => {
+}: ViewModel) => {
   return (
     <div className="booking-card">
       <div className="card-header">
         <div className="price-tag">
-          <strong>${listing.price}</strong> <span className="light">night</span>
+          <strong>${listing?.price}</strong> <span className="light">night</span>
         </div>
         <div className="rating-tag">
-          ★ {listing.rating} ·{" "}
-          <span className="underline">{listing.reviews} reviews</span>
+          ★ {listing?.rating} ·{" "}
+          <span className="underline">{listing?.reviews} reviews</span>
         </div>
       </div>
 
@@ -56,12 +59,12 @@ export const ReservationFormView = ({
               <label>CHECKOUT</label>
               <DatePicker
                 selected={endDate}
-                onChange={(date) => setEndDate(date)}
+                onChange={(date: Date | null) => date && setEndDate(date)}
                 selectsEnd
                 startDate={startDate}
                 endDate={endDate}
-                minDate={minCheckoutDate}
-                maxDate={maxCheckoutDate}
+                minDate={minCheckoutDate || undefined}
+                maxDate={maxCheckoutDate || undefined}
                 excludeDates={getBookedDates()}
                 className="clean-date-input"
               />
@@ -134,7 +137,7 @@ export const ReservationFormView = ({
       <div className="price-breakdown">
         <div className="line-item">
           <span>
-            ${listing.price} x {calculateNights() || 1} nights
+            ${listing?.price} x {calculateNights() || 1} nights
           </span>
           <span>${calculateTotal()}</span>
         </div>
