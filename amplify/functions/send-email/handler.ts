@@ -1,12 +1,41 @@
 import { SESClient, SendEmailCommand } from "@aws-sdk/client-ses";
 import type { Schema } from "../../data/resource";
 
+import { getConfirmationEmailHtml } from "./templates/confirmation";
+
 const client = new SESClient();
 
 export const handler: Schema["sendEmail"]["functionHandler"] = async (
   event,
 ) => {
-  const { to, subject, body } = event.arguments;
+  const {
+    to,
+    subject,
+    firstName,
+    lastName,
+    listingTitle,
+    listingDescription,
+    listingPrice,
+    startDate,
+    endDate,
+    numberOfPeople,
+    hostName,
+    listingUrl,
+  } = event.arguments;
+
+  const htmlBody = getConfirmationEmailHtml({
+    firstName,
+    lastName,
+    listingTitle,
+    listingDescription: listingDescription || undefined,
+    listingPrice: listingPrice || undefined,
+    startDate,
+    endDate,
+    numberOfPeople,
+    hostName: hostName || undefined,
+    listingUrl: listingUrl || undefined,
+  });
+
   try {
     console.log(`Attempting to send email to ${to} with subject: ${subject}`);
     await client.send(
@@ -15,7 +44,10 @@ export const handler: Schema["sendEmail"]["functionHandler"] = async (
         Destination: { ToAddresses: [to] },
         Message: {
           Subject: { Data: subject },
-          Body: { Text: { Data: body } },
+          Body: {
+            Html: { Data: htmlBody },
+            Text: { Data: `Reservation Confirmed for ${listingTitle}. Check your email for details.` },
+          },
         },
       }),
     );

@@ -24,7 +24,17 @@ const schema = a.schema({
     .arguments({
       to: a.string().required(),
       subject: a.string().required(),
-      body: a.string().required(),
+      message: a.string(), // Optional message body
+      firstName: a.string().required(),
+      lastName: a.string().required(),
+      listingTitle: a.string().required(),
+      listingDescription: a.string(),
+      listingPrice: a.float(),
+      startDate: a.string().required(),
+      endDate: a.string().required(),
+      numberOfPeople: a.integer().required(),
+      hostName: a.string(),
+      listingUrl: a.string(),
     })
     .returns(a.string())
     .authorization((allow) => [allow.guest()])

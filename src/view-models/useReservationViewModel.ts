@@ -68,6 +68,7 @@ export const useReserveViewModel = () => {
   const getBookedDates = () => {
     let dates: Date[] = [];
     reservations.forEach((res) => {
+      console.log(res);
       let current = new Date(res.startDate);
       const end = new Date(res.endDate);
       while (current <= end) {
@@ -144,21 +145,59 @@ export const useReserveViewModel = () => {
       }
 
       console.log("GraphQL Response:", res);
-      const emailSent = await sendConfirmationEmail(
-        email,
-        firstName,
-        listing.title,
-        startDate,
-        endDate,
-      );
-      if (emailSent) {
-        setSuccessMsg("Reserved successfully! Confirmation email sent.");
-      } else {
-        setSuccessMsg(
-          "Reserved successfully! (Email failed to send - check SES verification)",
-        );
-      }
-      setSuccessMsg("Reserved successfully!");
+
+      // Send Confirmation Email with Structured Data
+      const emailMutation = `
+        mutation SendEmail(
+          $to: String!
+          $subject: String!
+          $firstName: String!
+          $lastName: String!
+          $listingTitle: String!
+          $listingDescription: String
+          $listingPrice: Float
+          $startDate: String!
+          $endDate: String!
+          $numberOfPeople: Int!
+          $hostName: String
+          $listingUrl: String
+        ) {
+          sendEmail(
+            to: $to
+            subject: $subject
+            firstName: $firstName
+            lastName: $lastName
+            listingTitle: $listingTitle
+            listingDescription: $listingDescription
+            listingPrice: $listingPrice
+            startDate: $startDate
+            endDate: $endDate
+            numberOfPeople: $numberOfPeople
+            hostName: $hostName
+            listingUrl: $listingUrl
+          )
+        }
+      `;
+
+      await client.graphql({
+        query: emailMutation,
+        variables: {
+          to: email,
+          subject: "Reservation Confirmed!",
+          firstName,
+          lastName,
+          listingTitle: listing.title,
+          listingDescription: listing.description,
+          listingPrice: listing.price,
+          startDate: startDate.toISOString(),
+          endDate: endDate.toISOString(),
+          numberOfPeople,
+          hostName: listing.host,
+          listingUrl: window.location.origin,
+        },
+      });
+
+      setSuccessMsg("Reserved successfully! Confirmation email sent.");
       fetchReservations();
       setFirstName("");
       setLastName("");
@@ -179,7 +218,7 @@ export const useReserveViewModel = () => {
     if (!date) return;
     setStartDate(date);
     const newMaxDate = new Date(date);
-    newMaxDate.setDate(newMaxDate.getDate() + 14);
+    newMaxDate.setDate(newMaxDate.getDate() + 60);
 
     if (date >= endDate) {
       const newEndDate = new Date(date);
