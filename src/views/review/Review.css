@@ -1,0 +1,31 @@
+.review-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 40px 20px;
+}
+
+.review-header {
+  margin-bottom: 30px;
+  border-bottom: 1px solid #ebebeb;
+  padding-bottom: 20px;
+}
+
+.review-header h1 {
+  font-size: 32px;
+  font-weight: 800;
+  color: #484848;
+}
+
+.review-list {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.empty-review-state {
+  text-align: center;
+  padding: 40px;
+  color: #717171;
+  background: #f7f7f7;
+  border-radius: 8px;
+}

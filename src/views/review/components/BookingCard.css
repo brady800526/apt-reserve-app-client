@@ -1,0 +1,131 @@
+
+.booking-card-item {
+  border: 1px solid #ddd;
+  border-radius: 12px;
+  background-color: #fff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  display: flex;
+  flex-direction: row;
+  overflow: hidden;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  /* height removed to allow content to expand */
+}
+
+.booking-card-item:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.booking-image-container {
+  width: 300px;
+  flex-shrink: 0;
+  display: flex;
+}
+
+.booking-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  min-height: 200px; /* Ensure minimum height */
+}
+
+.booking-content {
+  flex: 1;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+}
+
+.booking-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #f0f0f0;
+  padding-bottom: 16px;
+  margin-bottom: 16px;
+}
+
+.booking-dates {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #222;
+}
+
+.booking-status {
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.booking-status.confirmed {
+  background-color: #e6fffa;
+  color: #047857;
+}
+
+.booking-status.created {
+  background-color: #eff6ff;
+  color: #1d4ed8;
+}
+
+.booking-status.cancelled,
+.booking-status.rejected {
+  background-color: #fef2f2;
+  color: #b91c1c;
+}
+
+.booking-details {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  font-size: 0.95rem;
+  color: #555;
+}
+
+.detail-row {
+  display: flex;
+  flex-direction: column;
+}
+
+.detail-label {
+  font-size: 0.75rem;
+  color: #717171;
+  text-transform: uppercase;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+
+.detail-value {
+  font-weight: 500;
+  color: #222;
+}
+
+.booking-actions {
+  margin-top: 24px;
+  display: flex;
+  justify-content: flex-end;
+  padding-top: 16px;
+  border-top: 1px solid #f0f0f0;
+}
+
+.confirm-button {
+  background-color: #ff385c;
+  color: white;
+  padding: 10px 22px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: 600;
+  transition: transform 0.1s ease, filter 0.2s ease;
+}
+
+.confirm-button:hover {
+  filter: brightness(0.95);
+}
+
+.confirm-button:active {
+  transform: scale(0.96);
+}
