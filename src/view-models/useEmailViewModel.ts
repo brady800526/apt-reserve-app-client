@@ -1,33 +1,14 @@
-import { EmailService } from "../services/EmailService";
+import {
+  EmailService,
+  SendConfirmationEmailInput,
+} from "../services/EmailService";
 
 export const useEmailViewModel = () => {
   const sendConfirmationEmail = async (
-    to: string,
-    firstName: string,
-    lastName: string,
-    listingTitle: string,
-    listingDescription: string,
-    listingPrice: number,
-    startDate: Date,
-    endDate: Date,
-    numberOfPeople: number,
-    hostName: string,
-    listingUrl: string,
+    input: SendConfirmationEmailInput,
   ): Promise<string | null> => {
     try {
-      await EmailService.sendConfirmationEmail(
-        to,
-        firstName,
-        lastName,
-        listingTitle,
-        listingDescription,
-        listingPrice,
-        startDate,
-        endDate,
-        numberOfPeople,
-        hostName,
-        listingUrl,
-      );
+      await EmailService.sendConfirmationEmail(input);
       return null;
     } catch (error: any) {
       console.error("Failed to send email", error);

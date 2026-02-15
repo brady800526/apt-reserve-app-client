@@ -2,20 +2,36 @@ import { generateClient } from "aws-amplify/api";
 
 const client = generateClient();
 
+export interface SendConfirmationEmailInput {
+  to: string;
+  firstName: string;
+  lastName: string;
+  listingTitle: string;
+  listingDescription: string;
+  listingPrice: number;
+  startDate: Date;
+  endDate: Date;
+  numberOfPeople: number;
+  hostName: string;
+  listingUrl: string;
+}
+
 export const EmailService = {
-  sendConfirmationEmail: async (
-    to: string,
-    firstName: string,
-    lastName: string,
-    listingTitle: string,
-    listingDescription: string,
-    listingPrice: number,
-    startDate: Date,
-    endDate: Date,
-    numberOfPeople: number,
-    hostName: string,
-    listingUrl: string
-  ) => {
+  sendConfirmationEmail: async (input: SendConfirmationEmailInput) => {
+    const {
+      to,
+      firstName,
+      lastName,
+      listingTitle,
+      listingDescription,
+      listingPrice,
+      startDate,
+      endDate,
+      numberOfPeople,
+      hostName,
+      listingUrl,
+    } = input;
+
     const emailMutation = `
       mutation SendEmail(
         $to: String!

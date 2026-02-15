@@ -107,7 +107,7 @@ export const useBookingViewModel = (price: number) => {
     }
 
     try {
-      await BookingService.createReservation({
+      await BookingService.createBooking({
         firstName,
         lastName,
         email,
@@ -119,19 +119,19 @@ export const useBookingViewModel = (price: number) => {
       console.log("Reservation created successfully");
 
       // Send Confirmation Email using ViewModel
-      const emailError = await sendConfirmationEmail(
-        email,
+      const emailError = await sendConfirmationEmail({
+        to: email,
         firstName,
         lastName,
-        listing.title,
-        listing.description,
-        listing.price,
+        listingTitle: listing.title,
+        listingDescription: listing.description,
+        listingPrice: listing.price,
         startDate,
         endDate,
         numberOfPeople,
-        listing.host,
-        window.location.origin,
-      );
+        hostName: listing.host,
+        listingUrl: window.location.origin,
+      });
 
       if (emailError) {
         console.error("Email sending failed:", emailError);

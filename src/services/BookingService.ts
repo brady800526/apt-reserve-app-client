@@ -2,6 +2,15 @@ import { generateClient } from "aws-amplify/api";
 
 const client = generateClient();
 
+export interface CreateBookingInput {
+  firstName: string;
+  lastName: string;
+  email: string;
+  startDate: string;
+  endDate: string;
+  numberOfPeople: number;
+}
+
 export const BookingService = {
   fetchBookings: async () => {
     const query = `
@@ -18,14 +27,7 @@ export const BookingService = {
     return res.data.listReservations.items;
   },
 
-  createReservation: async (input: {
-    firstName: string;
-    lastName: string;
-    email: string;
-    startDate: string;
-    endDate: string;
-    numberOfPeople: number;
-  }) => {
+  createBooking: async (input: CreateBookingInput) => {
     const mutation = `
       mutation CreateReservation($input: CreateReservationInput!) {
         createReservation(input: $input) {
