@@ -14,8 +14,8 @@ export interface CreateBookingInput {
 export const BookingService = {
   fetchBookings: async () => {
     const query = `
-      query ListReservations {
-        listReservations {
+      query ListBookings {
+        listBookings {
           items {
             startDate
             endDate
@@ -24,13 +24,13 @@ export const BookingService = {
       }
     `;
     const res = (await client.graphql({ query })) as any;
-    return res.data.listReservations.items;
+    return res.data.listBookings.items;
   },
 
   createBooking: async (input: CreateBookingInput) => {
     const mutation = `
-      mutation CreateReservation($input: CreateReservationInput!) {
-        createReservation(input: $input) {
+      mutation CreateBooking($input: CreateBookingInput!) {
+        createBooking(input: $input) {
           id
         }
       }
@@ -44,6 +44,6 @@ export const BookingService = {
       throw new Error(res.errors[0].message);
     }
 
-    return res.data.createReservation;
+    return res.data.createBooking;
   },
 };
