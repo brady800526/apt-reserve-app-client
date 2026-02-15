@@ -1,4 +1,4 @@
-import { useBookingFormViewModel } from "../../view-models/useBookingFormViewModel";
+import { useBookingSubmitViewModel } from "../../view-models/useBookingSubmitViewModel";
 import { useBookingViewModel } from "../../view-models/useBookingViewModel";
 import { useUserViewModel } from "../../view-models/useUserViewModel";
 import { ApartmentImageGridView } from "./components/ApartmentImageGridView";
@@ -6,13 +6,10 @@ import { ApartmentListingDetailsView } from "./components/ApartmentListingDetail
 import { BookingFormView } from "./components/BookingFormView";
 
 export const ApartmentDetailView = () => {
-  const bookingViewModel = useBookingViewModel();
+  const bookingSubmitViewModel = useBookingSubmitViewModel();
   const userViewModel = useUserViewModel();
-  const { listing } = bookingViewModel;
-  const bookingFormViewModel = useBookingFormViewModel(
-    listing?.price || 0,
-    userViewModel.user,
-  );
+  const { listing } = bookingSubmitViewModel;
+  const bookingFormViewModel = useBookingViewModel(listing?.price || 0);
 
   return (
     <main className="listing-content">
@@ -38,21 +35,9 @@ export const ApartmentDetailView = () => {
         <ApartmentListingDetailsView listing={listing!} />
         <div className="booking-sidebar">
           <BookingFormView
-            {...bookingViewModel}
-            {...userViewModel}
-            {...bookingFormViewModel}
-            handleSubmit={(e: React.FormEvent) =>
-              bookingViewModel.handleSubmit(e, {
-                firstName: userViewModel.user.firstName,
-                lastName: userViewModel.user.lastName,
-                email: userViewModel.user.email,
-                startDate: bookingFormViewModel.bookingForm.startDate,
-                endDate: bookingFormViewModel.bookingForm.endDate,
-                numberOfPeople: bookingFormViewModel.bookingForm.numberOfPeople,
-                validateUser: userViewModel.validateUser,
-                clearUser: userViewModel.clearUser,
-              })
-            }
+            bookingViewModel={bookingSubmitViewModel}
+            userViewModel={userViewModel}
+            bookingFormViewModel={bookingFormViewModel}
           />
         </div>
       </div>

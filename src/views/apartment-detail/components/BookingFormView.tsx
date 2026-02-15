@@ -1,34 +1,46 @@
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import { useBookingFormViewModel } from "../../../view-models/useBookingFormViewModel";
+import { useBookingSubmitViewModel } from "../../../view-models/useBookingSubmitViewModel";
 import { useBookingViewModel } from "../../../view-models/useBookingViewModel";
 import { useUserViewModel } from "../../../view-models/useUserViewModel";
 
-type ViewModel = Omit<
-  ReturnType<typeof useBookingViewModel>,
-  "handleSubmit"
-> &
-  ReturnType<typeof useUserViewModel> &
-  ReturnType<typeof useBookingFormViewModel> & {
-    handleSubmit: (e: React.FormEvent) => void;
-  };
+interface BookingFormViewProps {
+  bookingViewModel: ReturnType<typeof useBookingSubmitViewModel>;
+  userViewModel: ReturnType<typeof useUserViewModel>;
+  bookingFormViewModel: ReturnType<typeof useBookingViewModel>;
+}
 
 export const BookingFormView = ({
-  user,
-  setUser,
-  listing,
-  bookingForm,
-  setBookingForm,
-  error,
-  successMsg,
-  handleSubmit,
-  calculateNights,
-  calculateTotal,
-  getBookedDates,
-  minCheckoutDate,
-  maxCheckoutDate,
-  handleStartDateChange,
-}: ViewModel) => {
+  bookingViewModel,
+  userViewModel,
+  bookingFormViewModel,
+}: BookingFormViewProps) => {
+  const { listing, error, successMsg, getBookedDates, handleSubmit } =
+    bookingViewModel;
+  const { user, setUser, validateUser, clearUser } = userViewModel;
+  const {
+    bookingForm,
+    setBookingForm,
+    calculateNights,
+    calculateTotal,
+    minCheckoutDate,
+    maxCheckoutDate,
+    handleStartDateChange,
+  } = bookingFormViewModel;
+
+  const onFormSubmit = (e: React.FormEvent) => {
+    handleSubmit(e, {
+      firstName: user.firstName,
+      lastName: user.lastName,
+      email: user.email,
+      startDate: bookingForm.startDate,
+      endDate: bookingForm.endDate,
+      numberOfPeople: bookingForm.numberOfPeople,
+      validateUser,
+      clearUser,
+    });
+  };
+
   return (
     <div className="booking-card">
       <div className="card-header">
@@ -41,7 +53,7 @@ export const BookingFormView = ({
         </div>
       </div>
 
-      <form onSubmit={handleSubmit} noValidate>
+      <form onSubmit={onFormSubmit} noValidate>
         <div className="booking-inputs">
           <div className="date-row">
             <div className="date-box border-right">
@@ -52,7 +64,7 @@ export const BookingFormView = ({
                 selectsStart
                 startDate={bookingForm.startDate}
                 endDate={bookingForm.endDate}
-                excludeDates={getBookedDates()}
+                excludeDates={getBookedDates ? getBookedDates() : []}
                 minDate={new Date()}
                 className="clean-date-input"
               />
@@ -70,7 +82,7 @@ export const BookingFormView = ({
                 endDate={bookingForm.endDate}
                 minDate={minCheckoutDate || undefined}
                 maxDate={maxCheckoutDate || undefined}
-                excludeDates={getBookedDates()}
+                excludeDates={getBookedDates ? getBookedDates() : []}
                 className="clean-date-input"
               />
             </div>

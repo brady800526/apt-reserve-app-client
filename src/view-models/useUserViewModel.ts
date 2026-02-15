@@ -6,7 +6,20 @@ export interface User {
   email: string;
 }
 
-export const useUserViewModel = () => {
+// Modularized Interfaces
+export interface UserViewState {
+  user: User;
+}
+
+export interface UserViewActions {
+  setUser: React.Dispatch<React.SetStateAction<User>>;
+  validateUser: () => string | null;
+  clearUser: () => void;
+}
+
+export interface UserViewModel extends UserViewState, UserViewActions {}
+
+export const useUserViewModel = (): UserViewModel => {
   const [user, setUser] = useState<User>({
     firstName: "",
     lastName: "",
