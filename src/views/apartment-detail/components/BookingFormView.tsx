@@ -1,24 +1,23 @@
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import { useBookingActionViewModel } from "../../../view-models/actions/useBookingActionViewModel";
 import { useBookingViewModel } from "../../../view-models/useBookingViewModel";
 import { useUserViewModel } from "../../../view-models/useUserViewModel";
 
 interface BookingFormViewProps {
-  bookingViewModel: ReturnType<typeof useBookingActionViewModel>;
+  bookingViewModel: ReturnType<typeof useBookingViewModel>;
   userViewModel: ReturnType<typeof useUserViewModel>;
-  bookingFormViewModel: ReturnType<typeof useBookingViewModel>;
 }
 
 export const BookingFormView = ({
   bookingViewModel,
   userViewModel,
-  bookingFormViewModel,
 }: BookingFormViewProps) => {
-  const { listing, error, successMsg, getBookedDates, handleSubmit } =
-    bookingViewModel;
-  const { user, setUser, validateUser, clearUser } = userViewModel;
   const {
+    listing,
+    error,
+    successMsg,
+    getBookedDates,
+    handleSubmit,
     bookingForm,
     setBookingForm,
     calculateNights,
@@ -26,7 +25,8 @@ export const BookingFormView = ({
     minCheckoutDate,
     maxCheckoutDate,
     handleStartDateChange,
-  } = bookingFormViewModel;
+  } = bookingViewModel;
+  const { user, setUser, validateUser, clearUser } = userViewModel;
 
   const onFormSubmit = (e: React.FormEvent) => {
     handleSubmit(e, {
