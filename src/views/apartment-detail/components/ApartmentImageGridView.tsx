@@ -1,4 +1,4 @@
-export const ReservationImageGridView = () => {
+export const ApartmentImageGridView = () => {
   return (
     <section className="image-grid">
       <div className="main-image"></div>

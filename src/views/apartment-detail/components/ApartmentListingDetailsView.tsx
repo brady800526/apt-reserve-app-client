@@ -5,13 +5,13 @@ interface Listing {
   amenities: string[];
 }
 
-interface ReservationListingDetailsViewProps {
+interface ApartmentListingDetailsViewProps {
   listing: Listing;
 }
 
-export const ReservationListingDetailsView = ({
+export const ApartmentListingDetailsView = ({
   listing,
-}: ReservationListingDetailsViewProps) => {
+}: ApartmentListingDetailsViewProps) => {
   return (
     <div className="listing-details">
       <div className="host-info">

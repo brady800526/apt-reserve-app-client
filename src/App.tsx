@@ -1,5 +1,5 @@
 import "./App.css";
-import { ReservationView } from "./views/reserve/ReservationView";
+import { ApartmentDetailView } from "./views/apartment-detail/ApartmentDetailView";
 
 const App = () => {
   return (
@@ -7,7 +7,7 @@ const App = () => {
       {/* Navbar */}
       <header className="navbar"></header>
 
-      <ReservationView />
+      <ApartmentDetailView />
     </div>
   );
 };

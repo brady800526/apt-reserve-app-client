@@ -5,34 +5,76 @@ const client = generateClient();
 export const useEmailViewModel = () => {
   const sendConfirmationEmail = async (
     to: string,
-    name: string,
-    title: string,
-    start: Date,
-    end: Date,
-  ) => {
+    firstName: string,
+    lastName: string,
+    listingTitle: string,
+    listingDescription: string,
+    listingPrice: number,
+    startDate: Date,
+    endDate: Date,
+    numberOfPeople: number,
+    hostName: string,
+    listingUrl: string,
+  ): Promise<string | null> => {
     try {
-      const query = `
-        mutation SendEmail($to: String!, $subject: String!, $body: String!) {
-          sendEmail(to: $to, subject: $subject, body: $body)
+      const emailMutation = `
+        mutation SendEmail(
+          $to: String!
+          $subject: String!
+          $firstName: String!
+          $lastName: String!
+          $listingTitle: String!
+          $listingDescription: String
+          $listingPrice: Float
+          $startDate: String!
+          $endDate: String!
+          $numberOfPeople: Int!
+          $hostName: String
+          $listingUrl: String
+        ) {
+          sendEmail(
+            to: $to
+            subject: $subject
+            firstName: $firstName
+            lastName: $lastName
+            listingTitle: $listingTitle
+            listingDescription: $listingDescription
+            listingPrice: $listingPrice
+            startDate: $startDate
+            endDate: $endDate
+            numberOfPeople: $numberOfPeople
+            hostName: $hostName
+            listingUrl: $listingUrl
+          )
         }
       `;
+
       const response = (await client.graphql({
-        query,
+        query: emailMutation,
         variables: {
           to,
-          subject: `Reservation Confirmed for ${title}`,
-          body: `Hi ${name}, your stay from ${start.toDateString()} to ${end.toDateString()} is confirmed.`,
+          subject: "Reservation Confirmed!",
+          firstName,
+          lastName,
+          listingTitle,
+          listingDescription,
+          listingPrice,
+          startDate: startDate.toISOString(),
+          endDate: endDate.toISOString(),
+          numberOfPeople,
+          hostName,
+          listingUrl,
         },
       })) as any;
 
       if (response.errors && response.errors.length > 0) {
         console.error("Failed to send email", response.errors);
-        return false;
+        return response.errors[0].message || "Failed to send email";
       }
-      return true;
-    } catch (error) {
+      return null;
+    } catch (error: any) {
       console.error("Failed to send email", error);
-      return false;
+      return error.message || "Unknown error occurred";
     }
   };
 
