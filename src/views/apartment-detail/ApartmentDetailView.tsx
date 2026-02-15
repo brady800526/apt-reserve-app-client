@@ -1,12 +1,12 @@
-import { useBookingViewModel } from "../../view-models/useBookingViewModel";
+import { useReservationViewModel } from "../../view-models/useReservationViewModel";
 import { useUserViewModel } from "../../view-models/useUserViewModel";
-import { ApartmentImageGridView } from "./components/ApartmentImageGridView";
-import { ApartmentListingDetailsView } from "./components/ApartmentListingDetailsView";
-import { BookingFormView } from "./components/BookingFormView";
+import { ApartmentImageGridView } from "./components/ApartmentImageGrid";
+import { ApartmentListingDetailsView } from "./components/ApartmentListingDetails";
+import { ReservationFormView } from "./components/ReservationForm";
 
 export const ApartmentDetailView = () => {
-  // Mock Booking Data
-  const booking = {
+  // Mock Reservation Data
+  const reservation = {
     title: "Modern Downtown Studio with City Views",
     host: "Brady",
     price: 125,
@@ -22,18 +22,18 @@ export const ApartmentDetailView = () => {
       "Air conditioning",
     ],
   };
-  const bookingViewModel = useBookingViewModel(booking.price, booking);
+  const reservationViewModel = useReservationViewModel(reservation.price, reservation);
   const userViewModel = useUserViewModel();
 
   return (
     <main className="listing-content">
       {/* Title Section */}
       <section className="listing-header">
-        <h1>{booking?.title}</h1>
+        <h1>{reservation?.title}</h1>
         <div className="listing-meta">
           <span>
-            ★ {booking?.rating} ·{" "}
-            <span className="underline">{booking?.reviews} reviews</span>
+            ★ {reservation?.rating} ·{" "}
+            <span className="underline">{reservation?.reviews} reviews</span>
           </span>
           <span> · Superhost</span>
           <span>
@@ -46,11 +46,11 @@ export const ApartmentDetailView = () => {
       <ApartmentImageGridView />
 
       <div className="listing-body">
-        <ApartmentListingDetailsView booking={booking!} />
-        <div className="booking-sidebar">
-          <BookingFormView
-            booking={booking!}
-            bookingViewModel={bookingViewModel}
+        <ApartmentListingDetailsView reservation={reservation!} />
+        <div className="reservation-sidebar">
+          <ReservationFormView
+            reservation={reservation!}
+            reservationViewModel={reservationViewModel}
             userViewModel={userViewModel}
           />
         </div>

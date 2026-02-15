@@ -8,7 +8,7 @@ specifies that any unauthenticated user can "create", "read", "update",
 and "delete" any "Todo" records.
 =========================================================================*/
 const schema = a.schema({
-  Booking: a
+  Reservation: a
     .model({
       firstName: a.string().required(),
       lastName: a.string().required(),

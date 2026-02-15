@@ -1,32 +1,32 @@
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import { useBookingViewModel } from "../../../view-models/useBookingViewModel";
+import { useReservationViewModel } from "../../../view-models/useReservationViewModel";
 import { useUserViewModel } from "../../../view-models/useUserViewModel";
 
-interface BookingFormViewProps {
-  booking: any;
-  bookingViewModel: ReturnType<typeof useBookingViewModel>;
+interface ReservationFormViewProps {
+  reservation: any;
+  reservationViewModel: ReturnType<typeof useReservationViewModel>;
   userViewModel: ReturnType<typeof useUserViewModel>;
 }
 
-export const BookingFormView = ({
-  booking,
-  bookingViewModel,
+export const ReservationFormView = ({
+  reservation,
+  reservationViewModel,
   userViewModel,
-}: BookingFormViewProps) => {
+}: ReservationFormViewProps) => {
   const {
     error,
     successMsg,
     getBookedDates,
     handleSubmit,
-    bookingForm,
-    setBookingForm,
+    reservationForm,
+    setReservationForm,
     calculateNights,
     calculateTotal,
     minCheckoutDate,
     maxCheckoutDate,
     handleStartDateChange,
-  } = bookingViewModel;
+  } = reservationViewModel;
   const { user, setUser, validateUser, clearUser } = userViewModel;
 
   const onFormSubmit = (e: React.FormEvent) => {
@@ -34,37 +34,37 @@ export const BookingFormView = ({
       firstName: user.firstName,
       lastName: user.lastName,
       email: user.email,
-      startDate: bookingForm.startDate,
-      endDate: bookingForm.endDate,
-      numberOfPeople: bookingForm.numberOfPeople,
+      startDate: reservationForm.startDate,
+      endDate: reservationForm.endDate,
+      numberOfPeople: reservationForm.numberOfPeople,
       validateUser,
       clearUser,
     });
   };
 
   return (
-    <div className="booking-card">
+    <div className="reservation-card">
       <div className="card-header">
         <div className="price-tag">
-          <strong>${booking?.price}</strong> <span className="light">night</span>
+          <strong>${reservation?.price}</strong> <span className="light">night</span>
         </div>
         <div className="rating-tag">
-          ★ {booking?.rating} ·{" "}
-          <span className="underline">{booking?.reviews} reviews</span>
+          ★ {reservation?.rating} ·{" "}
+          <span className="underline">{reservation?.reviews} reviews</span>
         </div>
       </div>
 
       <form onSubmit={onFormSubmit} noValidate>
-        <div className="booking-inputs">
+        <div className="reservation-inputs">
           <div className="date-row">
             <div className="date-box border-right">
               <label>CHECK-IN</label>
               <DatePicker
-                selected={bookingForm.startDate}
+                selected={reservationForm.startDate}
                 onChange={handleStartDateChange}
                 selectsStart
-                startDate={bookingForm.startDate}
-                endDate={bookingForm.endDate}
+                startDate={reservationForm.startDate}
+                endDate={reservationForm.endDate}
                 excludeDates={getBookedDates ? getBookedDates() : []}
                 minDate={new Date()}
                 className="clean-date-input"
@@ -73,14 +73,14 @@ export const BookingFormView = ({
             <div className="date-box">
               <label>CHECKOUT</label>
               <DatePicker
-                selected={bookingForm.endDate}
+                selected={reservationForm.endDate}
                 onChange={(date: Date | null) =>
                   date &&
-                  setBookingForm((prev) => ({ ...prev, endDate: date }))
+                  setReservationForm((prev) => ({ ...prev, endDate: date }))
                 }
                 selectsEnd
-                startDate={bookingForm.startDate}
-                endDate={bookingForm.endDate}
+                startDate={reservationForm.startDate}
+                endDate={reservationForm.endDate}
                 minDate={minCheckoutDate || undefined}
                 maxDate={maxCheckoutDate || undefined}
                 excludeDates={getBookedDates ? getBookedDates() : []}
@@ -127,26 +127,26 @@ export const BookingFormView = ({
                 type="button"
                 className="guest-btn"
                 onClick={() =>
-                  setBookingForm((prev) => ({
+                  setReservationForm((prev) => ({
                     ...prev,
                     numberOfPeople: Math.max(1, prev.numberOfPeople - 1),
                   }))
                 }
-                disabled={bookingForm.numberOfPeople <= 1}
+                disabled={reservationForm.numberOfPeople <= 1}
               >
                 -
               </button>
-              <span className="guest-count">{bookingForm.numberOfPeople}</span>
+              <span className="guest-count">{reservationForm.numberOfPeople}</span>
               <button
                 type="button"
                 className="guest-btn"
                 onClick={() =>
-                  setBookingForm((prev) => ({
+                  setReservationForm((prev) => ({
                     ...prev,
                     numberOfPeople: Math.min(2, prev.numberOfPeople + 1),
                   }))
                 }
-                disabled={bookingForm.numberOfPeople >= 2}
+                disabled={reservationForm.numberOfPeople >= 2}
               >
                 +
               </button>
@@ -167,7 +167,7 @@ export const BookingFormView = ({
       <div className="price-breakdown">
         <div className="line-item">
           <span>
-            ${booking?.price} x {calculateNights() || 1} nights
+            ${reservation?.price} x {calculateNights() || 1} nights
           </span>
           <span>${calculateTotal()}</span>
         </div>

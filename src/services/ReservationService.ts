@@ -2,7 +2,7 @@ import { generateClient } from "aws-amplify/api";
 
 const client = generateClient();
 
-export interface CreateBookingInput {
+export interface CreateReservationInput {
   firstName: string;
   lastName: string;
   email: string;
@@ -12,7 +12,7 @@ export interface CreateBookingInput {
   status?: "CREATED" | "CANCELLED" | "REJECTED" | "CONFIRMED";
 }
 
-export interface Booking {
+export interface Reservation {
   id: string;
   firstName: string;
   lastName: string;
@@ -24,11 +24,11 @@ export interface Booking {
   totalPrice?: number;
 }
 
-export const BookingService = {
-  fetchBookings: async () => {
+export const ReservationService = {
+  fetchReservations: async () => {
     const query = `
-      query ListBookings {
-        listBookings {
+      query ListReservations {
+        listReservations {
           items {
             id
             firstName
@@ -43,13 +43,13 @@ export const BookingService = {
       }
     `;
     const res = (await client.graphql({ query })) as any;
-    return res.data.listBookings.items;
+    return res.data.listReservations.items;
   },
 
-  createBooking: async (input: CreateBookingInput) => {
+  createReservation: async (input: CreateReservationInput) => {
     const mutation = `
-      mutation CreateBooking($input: CreateBookingInput!) {
-        createBooking(input: $input) {
+      mutation CreateReservation($input: CreateReservationInput!) {
+        createReservation(input: $input) {
           id
           status
         }
@@ -64,13 +64,13 @@ export const BookingService = {
       throw new Error(res.errors[0].message);
     }
 
-    return res.data.createBooking;
+    return res.data.createReservation;
   },
 
-  updateBooking: async (id: string, status: string) => {
+  updateReservation: async (id: string, status: string) => {
     const mutation = `
-      mutation UpdateBooking($input: UpdateBookingInput!) {
-        updateBooking(input: $input) {
+      mutation UpdateReservation($input: UpdateReservationInput!) {
+        updateReservation(input: $input) {
           id
           status
         }
@@ -85,6 +85,6 @@ export const BookingService = {
       throw new Error(res.errors[0].message);
     }
 
-    return res.data.updateBooking;
+    return res.data.updateReservation;
   },
 };

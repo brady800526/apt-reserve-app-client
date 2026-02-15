@@ -119,40 +119,49 @@ hr {
   margin-bottom: 10px;
 }
 
-/* Right Column: Sticky Card */
-.booking-sidebar {
-  position: relative;
+/* Reservation Sidebar */
+.reservation-sidebar {
+  flex: 0 0 380px;
+  position: sticky;
+  top: 100px; /* Adjust based on navbar height + spacing */
+  height: fit-content;
 }
 
-.booking-card {
-  position: sticky;
-  top: 120px;
-  border: 1px solid rgb(221, 221, 221);
+/* Reservation Card */
+.reservation-card {
+  border: 1px solid #dddddd;
   border-radius: 12px;
   padding: 24px;
-  box-shadow: rgba(0, 0, 0, 0.12) 0px 6px 16px;
-  background: white;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+  background-color: white;
 }
 
-.card-header {
+.reservation-card .card-header {
   display: flex;
   justify-content: space-between;
   align-items: baseline;
   margin-bottom: 24px;
 }
 
-.price-tag {
+.reservation-card .price-tag {
   font-size: 22px;
+  color: #222222;
 }
 
-.light {
+.reservation-card .price-tag .light {
   font-size: 16px;
-  font-weight: 400;
   color: #717171;
+  font-weight: 400;
+}
+
+.reservation-card .rating-tag {
+  font-size: 14px;
+  color: #222222;
+  font-weight: 600;
 }
 
 /* Form Inputs */
-.booking-inputs {
+.reservation-inputs {
   border: 1px solid #b0b0b0;
   border-radius: 8px;
   margin-bottom: 16px;
@@ -336,7 +345,7 @@ hr {
     grid-template-columns: 1fr;
   }
 
-  .booking-card {
+  .reservation-card {
     position: static;
     margin-top: 32px;
   }

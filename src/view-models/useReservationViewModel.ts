@@ -1,18 +1,18 @@
 import { Amplify } from "aws-amplify";
 import { FormEvent, useEffect, useState } from "react";
 import outputs from "../../amplify_outputs.json";
-import { BookingService } from "../services/BookingService";
+import { ReservationService } from "../services/ReservationService";
 import { useEmailViewModel } from "./useEmailViewModel";
 
 Amplify.configure(outputs);
 
-export interface BookingFormState {
+export interface ReservationFormState {
   startDate: Date;
   endDate: Date;
   numberOfPeople: number;
 }
 
-interface BookingSubmitParams {
+interface ReservationSubmitParams {
   firstName: string;
   lastName: string;
   email: string;
@@ -23,8 +23,8 @@ interface BookingSubmitParams {
   clearUser: () => void;
 }
 
-export const useBookingViewModel = (price: number, booking: any) => {
-  const [bookingForm, setBookingForm] = useState<BookingFormState>({
+export const useReservationViewModel = (price: number, reservation: any) => {
+  const [reservationForm, setReservationForm] = useState<ReservationFormState>({
     startDate: new Date(),
     endDate: (() => {
       const date = new Date();
@@ -34,28 +34,28 @@ export const useBookingViewModel = (price: number, booking: any) => {
     numberOfPeople: 1,
   });
 
-  const [bookings, setBookings] = useState<any[]>([]);
+  const [reservations, setReservations] = useState<any[]>([]);
   const [error, setError] = useState("");
   const [successMsg, setSuccessMsg] = useState("");
   const { sendConfirmationEmail } = useEmailViewModel();
 
-  const fetchBookings = async () => {
+  const fetchReservations = async () => {
     try {
-      const items = await BookingService.fetchBookings();
-      setBookings(items);
+      const items = await ReservationService.fetchReservations();
+      setReservations(items);
     } catch (err) {
-      console.error("Error fetching bookings", err);
+      console.error("Error fetching reservations", err);
     }
   };
 
   useEffect(() => {
-    fetchBookings();
+    fetchReservations();
   }, []);
 
   const getBookedDates = () => {
     let dates: Date[] = [];
-    bookings.forEach((res) => {
-      // Only block dates for CONFIRMED bookings
+    reservations.forEach((res) => {
+      // Only block dates for CONFIRMED reservations
       if (res.status !== "CONFIRMED") {
         return;
       }
@@ -81,7 +81,7 @@ export const useBookingViewModel = (price: number, booking: any) => {
       numberOfPeople,
       validateUser,
       clearUser,
-    }: BookingSubmitParams,
+    }: ReservationSubmitParams,
   ) => {
     e.preventDefault();
     setError("");
@@ -94,7 +94,7 @@ export const useBookingViewModel = (price: number, booking: any) => {
     }
 
     try {
-      await BookingService.createBooking({
+      await ReservationService.createReservation({
         firstName,
         lastName,
         email,
@@ -111,13 +111,13 @@ export const useBookingViewModel = (price: number, booking: any) => {
         to: email,
         firstName,
         lastName,
-        listingTitle: booking.title,
-        listingDescription: booking.description,
-        listingPrice: booking.price,
+        listingTitle: reservation.title,
+        listingDescription: reservation.description,
+        listingPrice: reservation.price,
         startDate,
         endDate,
         numberOfPeople,
-        hostName: booking.host,
+        hostName: reservation.host,
         listingUrl: window.location.origin,
       });
 
@@ -126,11 +126,11 @@ export const useBookingViewModel = (price: number, booking: any) => {
       }
 
       setSuccessMsg("Reserved successfully! Confirmation email sent.");
-      fetchBookings();
+      fetchReservations();
       clearUser();
     } catch (err: any) {
       console.error(err);
-      let errorMessage = "Booking failed";
+      let errorMessage = "Reservation failed";
       if (err?.errors && Array.isArray(err.errors) && err.errors.length > 0) {
         errorMessage = err.errors[0].message;
       } else if (err.message) {
@@ -141,9 +141,9 @@ export const useBookingViewModel = (price: number, booking: any) => {
   };
 
   const calculateNights = () => {
-    if (!bookingForm.startDate || !bookingForm.endDate) return 0;
+    if (!reservationForm.startDate || !reservationForm.endDate) return 0;
     const diffTime = Math.abs(
-      bookingForm.endDate.getTime() - bookingForm.startDate.getTime(),
+      reservationForm.endDate.getTime() - reservationForm.startDate.getTime(),
     );
     return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
   };
@@ -158,45 +158,45 @@ export const useBookingViewModel = (price: number, booking: any) => {
     const newMaxDate = new Date(date);
     newMaxDate.setDate(newMaxDate.getDate() + 60);
 
-    let newEndDate = bookingForm.endDate;
+    let newEndDate = reservationForm.endDate;
 
-    if (date >= bookingForm.endDate) {
+    if (date >= reservationForm.endDate) {
       newEndDate = new Date(date);
       newEndDate.setDate(newEndDate.getDate() + 1);
-    } else if (bookingForm.endDate > newMaxDate) {
+    } else if (reservationForm.endDate > newMaxDate) {
       newEndDate = newMaxDate;
     }
 
-    setBookingForm((prev) => ({
+    setReservationForm((prev) => ({
       ...prev,
       startDate: newStartDate,
       endDate: newEndDate,
     }));
   };
 
-  const minCheckoutDate = bookingForm.startDate
-    ? new Date(bookingForm.startDate)
+  const minCheckoutDate = reservationForm.startDate
+    ? new Date(reservationForm.startDate)
     : null;
   if (minCheckoutDate) {
     minCheckoutDate.setDate(minCheckoutDate.getDate() + 1);
   }
 
-  const maxCheckoutDate = bookingForm.startDate
-    ? new Date(bookingForm.startDate)
+  const maxCheckoutDate = reservationForm.startDate
+    ? new Date(reservationForm.startDate)
     : null;
   if (maxCheckoutDate) {
     maxCheckoutDate.setDate(maxCheckoutDate.getDate() + 60);
   }
 
   return {
-    bookingForm,
-    setBookingForm,
+    reservationForm,
+    setReservationForm,
     calculateNights,
     calculateTotal,
     handleStartDateChange,
     minCheckoutDate,
     maxCheckoutDate,
-    bookings,
+    reservations,
     error,
     successMsg,
     handleSubmit,

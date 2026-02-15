@@ -1,5 +1,5 @@
 
-.booking-card-item {
+.reservation-card-item {
   border: 1px solid #ddd;
   border-radius: 12px;
   background-color: #fff;
@@ -11,32 +11,32 @@
   /* height removed to allow content to expand */
 }
 
-.booking-card-item:hover {
+.reservation-card-item:hover {
   transform: translateY(-2px);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
-.booking-image-container {
+.reservation-image-container {
   width: 300px;
   flex-shrink: 0;
   display: flex;
 }
 
-.booking-image {
+.reservation-image {
   width: 100%;
   height: 100%;
   object-fit: cover;
   min-height: 200px; /* Ensure minimum height */
 }
 
-.booking-content {
+.reservation-content {
   flex: 1;
   padding: 24px;
   display: flex;
   flex-direction: column;
 }
 
-.booking-header {
+.reservation-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -45,13 +45,13 @@
   margin-bottom: 16px;
 }
 
-.booking-dates {
+.reservation-dates {
   font-size: 1.1rem;
   font-weight: 600;
   color: #222;
 }
 
-.booking-status {
+.reservation-status {
   padding: 6px 12px;
   border-radius: 6px;
   font-size: 0.85rem;
@@ -60,23 +60,23 @@
   letter-spacing: 0.5px;
 }
 
-.booking-status.confirmed {
+.reservation-status.confirmed {
   background-color: #e6fffa;
   color: #047857;
 }
 
-.booking-status.created {
+.reservation-status.created {
   background-color: #eff6ff;
   color: #1d4ed8;
 }
 
-.booking-status.cancelled,
-.booking-status.rejected {
+.reservation-status.cancelled,
+.reservation-status.rejected {
   background-color: #fef2f2;
   color: #b91c1c;
 }
 
-.booking-details {
+.reservation-details {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 16px;
@@ -102,12 +102,13 @@
   color: #222;
 }
 
-.booking-actions {
+.reservation-actions {
   margin-top: 24px;
   display: flex;
   justify-content: flex-end;
   padding-top: 16px;
   border-top: 1px solid #f0f0f0;
+  gap: 12px;
 }
 
 .confirm-button {
@@ -127,5 +128,26 @@
 }
 
 .confirm-button:active {
+  transform: scale(0.96);
+}
+
+.reject-button {
+  background-color: white;
+  color: #222;
+  padding: 10px 22px;
+  border: 1px solid #222;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: 600;
+  transition: background-color 0.2s ease, transform 0.1s ease;
+}
+
+.reject-button:hover {
+  background-color: #f7f7f7;
+}
+
+.reject-button:active {
+  background-color: #f0f0f0;
   transform: scale(0.96);
 }
