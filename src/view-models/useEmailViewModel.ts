@@ -1,8 +1,6 @@
-import { generateClient } from "aws-amplify/api";
+import { EmailService } from "../services/EmailService";
 
-const client = generateClient();
-
-export const useEmailActionViewModel = () => {
+export const useEmailViewModel = () => {
   const sendConfirmationEmail = async (
     to: string,
     firstName: string,
@@ -17,60 +15,19 @@ export const useEmailActionViewModel = () => {
     listingUrl: string,
   ): Promise<string | null> => {
     try {
-      const emailMutation = `
-        mutation SendEmail(
-          $to: String!
-          $subject: String!
-          $firstName: String!
-          $lastName: String!
-          $listingTitle: String!
-          $listingDescription: String
-          $listingPrice: Float
-          $startDate: String!
-          $endDate: String!
-          $numberOfPeople: Int!
-          $hostName: String
-          $listingUrl: String
-        ) {
-          sendEmail(
-            to: $to
-            subject: $subject
-            firstName: $firstName
-            lastName: $lastName
-            listingTitle: $listingTitle
-            listingDescription: $listingDescription
-            listingPrice: $listingPrice
-            startDate: $startDate
-            endDate: $endDate
-            numberOfPeople: $numberOfPeople
-            hostName: $hostName
-            listingUrl: $listingUrl
-          )
-        }
-      `;
-
-      const response = (await client.graphql({
-        query: emailMutation,
-        variables: {
-          to,
-          subject: "Reservation Confirmed!",
-          firstName,
-          lastName,
-          listingTitle,
-          listingDescription,
-          listingPrice,
-          startDate: startDate.toISOString(),
-          endDate: endDate.toISOString(),
-          numberOfPeople,
-          hostName,
-          listingUrl,
-        },
-      })) as any;
-
-      if (response.errors && response.errors.length > 0) {
-        console.error("Failed to send email", response.errors);
-        return response.errors[0].message || "Failed to send email";
-      }
+      await EmailService.sendConfirmationEmail(
+        to,
+        firstName,
+        lastName,
+        listingTitle,
+        listingDescription,
+        listingPrice,
+        startDate,
+        endDate,
+        numberOfPeople,
+        hostName,
+        listingUrl,
+      );
       return null;
     } catch (error: any) {
       console.error("Failed to send email", error);

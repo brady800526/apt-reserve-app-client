@@ -1,12 +1,10 @@
 import { Amplify } from "aws-amplify";
-import { generateClient } from "aws-amplify/api";
 import { FormEvent, useEffect, useState } from "react";
 import outputs from "../../amplify_outputs.json";
+import { BookingService } from "../services/BookingService";
 import { useEmailViewModel } from "./useEmailViewModel";
 
 Amplify.configure(outputs);
-
-const client = generateClient();
 
 export interface BookingFormState {
   startDate: Date;
@@ -61,18 +59,8 @@ export const useBookingViewModel = (price: number) => {
 
   const fetchBookings = async () => {
     try {
-      const query = `
-        query ListReservations {
-          listReservations {
-            items {
-              startDate
-              endDate
-            }
-          }
-        }
-      `;
-      const res = (await client.graphql({ query })) as any;
-      setBookings(res.data.listReservations.items);
+      const items = await BookingService.fetchBookings();
+      setBookings(items);
     } catch (err) {
       console.error("Error fetching bookings", err);
     }
@@ -119,35 +107,16 @@ export const useBookingViewModel = (price: number) => {
     }
 
     try {
-      const mutation = `
-        mutation CreateReservation($input: CreateReservationInput!) {
-          createReservation(input: $input) {
-            id
-          }
-        }
-      `;
-      const res = (await client.graphql({
-        query: mutation,
-        variables: {
-          input: {
-            firstName,
-            lastName,
-            email,
-            startDate: startDate.toISOString(),
-            endDate: endDate.toISOString(),
-            numberOfPeople,
-          },
-        },
-      })) as any;
+      await BookingService.createReservation({
+        firstName,
+        lastName,
+        email,
+        startDate: startDate.toISOString(),
+        endDate: endDate.toISOString(),
+        numberOfPeople,
+      });
 
-      if (res.errors && Array.isArray(res.errors) && res.errors.length > 0) {
-        const errorMessage = res.errors[0].message;
-        setError(errorMessage);
-        console.error("GraphQL Error:", errorMessage);
-        return;
-      }
-
-      console.log("GraphQL Response:", res);
+      console.log("Reservation created successfully");
 
       // Send Confirmation Email using ViewModel
       const emailError = await sendConfirmationEmail(
