@@ -3,12 +3,12 @@ import { ApartmentDetailView } from "./views/apartment-detail/ApartmentDetailVie
 
 const App = () => {
   return (
-    <div className="app-container">
-      {/* Navbar */}
-      <header className="navbar"></header>
+      <div className="app-container">
+        {/* Navbar */}
+        <header className="navbar"></header>
 
       <ApartmentDetailView />
-    </div>
+      </div>
   );
 };
 

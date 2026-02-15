@@ -9,6 +9,7 @@ export interface CreateBookingInput {
   startDate: string;
   endDate: string;
   numberOfPeople: number;
+  status?: "CREATED" | "CANCELLED" | "REJECTED" | "CONFIRMED";
 }
 
 export const BookingService = {
@@ -19,6 +20,7 @@ export const BookingService = {
           items {
             startDate
             endDate
+            status
           }
         }
       }
@@ -32,6 +34,7 @@ export const BookingService = {
       mutation CreateBooking($input: CreateBookingInput!) {
         createBooking(input: $input) {
           id
+          status
         }
       }
     `;

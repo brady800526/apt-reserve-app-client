@@ -23,7 +23,7 @@ interface BookingSubmitParams {
   clearUser: () => void;
 }
 
-export const useBookingViewModel = (price: number) => {
+export const useBookingViewModel = (price: number, booking: any) => {
   const [bookingForm, setBookingForm] = useState<BookingFormState>({
     startDate: new Date(),
     endDate: (() => {
@@ -38,24 +38,6 @@ export const useBookingViewModel = (price: number) => {
   const [error, setError] = useState("");
   const [successMsg, setSuccessMsg] = useState("");
   const { sendConfirmationEmail } = useEmailViewModel();
-
-  // Mock Listing Data
-  const listing = {
-    title: "Modern Downtown Studio with City Views",
-    host: "Brady",
-    price: 125,
-    rating: 4.92,
-    reviews: 128,
-    description:
-      "Enjoy a stylish experience at this centrally-located place. Perfect for weekend getaways and business trips. Features a modern kitchen, high-speed Wi-Fi, and a stunning view of the city skyline.",
-    amenities: [
-      "Fast Wifi",
-      "Dedicated workspace",
-      "Kitchen",
-      "Washer/Dryer",
-      "Air conditioning",
-    ],
-  };
 
   const fetchBookings = async () => {
     try {
@@ -73,6 +55,11 @@ export const useBookingViewModel = (price: number) => {
   const getBookedDates = () => {
     let dates: Date[] = [];
     bookings.forEach((res) => {
+      // Only block dates for CONFIRMED bookings
+      if (res.status !== "CONFIRMED") {
+        return;
+      }
+
       let current = new Date(res.startDate);
       const end = new Date(res.endDate);
       while (current <= end) {
@@ -114,6 +101,7 @@ export const useBookingViewModel = (price: number) => {
         startDate: startDate.toISOString(),
         endDate: endDate.toISOString(),
         numberOfPeople,
+        status: "CREATED",
       });
 
       console.log("Reservation created successfully");
@@ -123,13 +111,13 @@ export const useBookingViewModel = (price: number) => {
         to: email,
         firstName,
         lastName,
-        listingTitle: listing.title,
-        listingDescription: listing.description,
-        listingPrice: listing.price,
+        listingTitle: booking.title,
+        listingDescription: booking.description,
+        listingPrice: booking.price,
         startDate,
         endDate,
         numberOfPeople,
-        hostName: listing.host,
+        hostName: booking.host,
         listingUrl: window.location.origin,
       });
 
@@ -197,7 +185,7 @@ export const useBookingViewModel = (price: number) => {
     ? new Date(bookingForm.startDate)
     : null;
   if (maxCheckoutDate) {
-    maxCheckoutDate.setDate(maxCheckoutDate.getDate() + 14);
+    maxCheckoutDate.setDate(maxCheckoutDate.getDate() + 60);
   }
 
   return {
@@ -209,7 +197,6 @@ export const useBookingViewModel = (price: number) => {
     minCheckoutDate,
     maxCheckoutDate,
     bookings,
-    listing,
     error,
     successMsg,
     handleSubmit,

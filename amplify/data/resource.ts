@@ -16,6 +16,7 @@ const schema = a.schema({
       startDate: a.string().required(),
       endDate: a.string().required(),
       numberOfPeople: a.integer().required(),
+      status: a.enum(["CREATED", "CANCELLED", "REJECTED", "CONFIRMED"]),
     })
     .authorization((allow) => [allow.guest()]),
 

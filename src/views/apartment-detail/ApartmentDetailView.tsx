@@ -5,23 +5,35 @@ import { ApartmentListingDetailsView } from "./components/ApartmentListingDetail
 import { BookingFormView } from "./components/BookingFormView";
 
 export const ApartmentDetailView = () => {
-  const bookingViewModel = useBookingViewModel(125); // Pass price here or fetch it inside if possible, but for now we pass a default or handle it.
-  // Actually, useBookingViewModel needs price. The previous code passed listing?.price || 0.
-  // But wait, useBookingViewModel now fetches listing data logically (or has mock data).
-  // Let's check useBookingViewModel implementation again. It has mock listing data inside.
-  // So we can probably just call it.
-  const { listing } = bookingViewModel;
+  // Mock Booking Data
+  const booking = {
+    title: "Modern Downtown Studio with City Views",
+    host: "Brady",
+    price: 125,
+    rating: 4.92,
+    reviews: 128,
+    description:
+      "Enjoy a stylish experience at this centrally-located place. Perfect for weekend getaways and business trips. Features a modern kitchen, high-speed Wi-Fi, and a stunning view of the city skyline.",
+    amenities: [
+      "Fast Wifi",
+      "Dedicated workspace",
+      "Kitchen",
+      "Washer/Dryer",
+      "Air conditioning",
+    ],
+  };
+  const bookingViewModel = useBookingViewModel(booking.price, booking);
   const userViewModel = useUserViewModel();
 
   return (
     <main className="listing-content">
       {/* Title Section */}
       <section className="listing-header">
-        <h1>{listing?.title}</h1>
+        <h1>{booking?.title}</h1>
         <div className="listing-meta">
           <span>
-            ★ {listing?.rating} ·{" "}
-            <span className="underline">{listing?.reviews} reviews</span>
+            ★ {booking?.rating} ·{" "}
+            <span className="underline">{booking?.reviews} reviews</span>
           </span>
           <span> · Superhost</span>
           <span>
@@ -34,9 +46,10 @@ export const ApartmentDetailView = () => {
       <ApartmentImageGridView />
 
       <div className="listing-body">
-        <ApartmentListingDetailsView listing={listing!} />
+        <ApartmentListingDetailsView booking={booking!} />
         <div className="booking-sidebar">
           <BookingFormView
+            booking={booking!}
             bookingViewModel={bookingViewModel}
             userViewModel={userViewModel}
           />

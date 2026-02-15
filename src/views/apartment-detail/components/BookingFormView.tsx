@@ -4,16 +4,17 @@ import { useBookingViewModel } from "../../../view-models/useBookingViewModel";
 import { useUserViewModel } from "../../../view-models/useUserViewModel";
 
 interface BookingFormViewProps {
+  booking: any;
   bookingViewModel: ReturnType<typeof useBookingViewModel>;
   userViewModel: ReturnType<typeof useUserViewModel>;
 }
 
 export const BookingFormView = ({
+  booking,
   bookingViewModel,
   userViewModel,
 }: BookingFormViewProps) => {
   const {
-    listing,
     error,
     successMsg,
     getBookedDates,
@@ -45,11 +46,11 @@ export const BookingFormView = ({
     <div className="booking-card">
       <div className="card-header">
         <div className="price-tag">
-          <strong>${listing?.price}</strong> <span className="light">night</span>
+          <strong>${booking?.price}</strong> <span className="light">night</span>
         </div>
         <div className="rating-tag">
-          ★ {listing?.rating} ·{" "}
-          <span className="underline">{listing?.reviews} reviews</span>
+          ★ {booking?.rating} ·{" "}
+          <span className="underline">{booking?.reviews} reviews</span>
         </div>
       </div>
 
@@ -166,7 +167,7 @@ export const BookingFormView = ({
       <div className="price-breakdown">
         <div className="line-item">
           <span>
-            ${listing?.price} x {calculateNights() || 1} nights
+            ${booking?.price} x {calculateNights() || 1} nights
           </span>
           <span>${calculateTotal()}</span>
         </div>

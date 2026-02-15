@@ -6,23 +6,23 @@ interface Listing {
 }
 
 interface ApartmentListingDetailsViewProps {
-  listing: Listing;
+  booking: Listing;
 }
 
 export const ApartmentListingDetailsView = ({
-  listing,
+  booking,
 }: ApartmentListingDetailsViewProps) => {
   return (
     <div className="listing-details">
       <div className="host-info">
-        <h2>Hosted by {listing.host}</h2>
+        <h2>Hosted by {booking.host}</h2>
         <p>Superhost · 4 years hosting</p>
       </div>
 
       <div className="divider"></div>
 
       <div className="description">
-        <p>{listing.description}</p>
+        <p>{booking.description}</p>
       </div>
 
       <div className="divider"></div>
@@ -30,7 +30,7 @@ export const ApartmentListingDetailsView = ({
       <div className="amenities">
         <h2>What this place offers</h2>
         <ul className="amenities-list">
-          {listing.amenities?.map((amenity: string, index: number) => (
+          {booking.amenities?.map((amenity: string, index: number) => (
             <li key={index}>{amenity}</li>
           ))}
         </ul>
