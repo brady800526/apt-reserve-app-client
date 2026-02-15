@@ -2,7 +2,7 @@ import { generateClient } from "aws-amplify/api";
 
 const client = generateClient();
 
-export const useEmailViewModel = () => {
+export const useEmailActionViewModel = () => {
   const sendConfirmationEmail = async (
     to: string,
     firstName: string,

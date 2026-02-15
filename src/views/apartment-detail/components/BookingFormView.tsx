@@ -1,11 +1,11 @@
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import { useBookingSubmitViewModel } from "../../../view-models/useBookingSubmitViewModel";
+import { useBookingActionViewModel } from "../../../view-models/actions/useBookingActionViewModel";
 import { useBookingViewModel } from "../../../view-models/useBookingViewModel";
 import { useUserViewModel } from "../../../view-models/useUserViewModel";
 
 interface BookingFormViewProps {
-  bookingViewModel: ReturnType<typeof useBookingSubmitViewModel>;
+  bookingViewModel: ReturnType<typeof useBookingActionViewModel>;
   userViewModel: ReturnType<typeof useUserViewModel>;
   bookingFormViewModel: ReturnType<typeof useBookingViewModel>;
 }

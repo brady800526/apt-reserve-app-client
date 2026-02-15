@@ -1,8 +1,8 @@
 import { Amplify } from "aws-amplify";
 import { generateClient } from "aws-amplify/api";
 import { FormEvent, useEffect, useState } from "react";
-import outputs from "../../amplify_outputs.json";
-import { useEmailViewModel } from "./useEmailViewModel";
+import outputs from "../../../amplify_outputs.json";
+import { useEmailActionViewModel } from "./useEmailActionViewModel";
 
 Amplify.configure(outputs);
 
@@ -19,11 +19,11 @@ interface BookingSubmitParams {
   clearUser: () => void;
 }
 
-export const useBookingSubmitViewModel = () => {
+export const useBookingActionViewModel = () => {
   const [bookings, setBookings] = useState<any[]>([]);
   const [error, setError] = useState("");
   const [successMsg, setSuccessMsg] = useState("");
-  const { sendConfirmationEmail } = useEmailViewModel();
+  const { sendConfirmationEmail } = useEmailActionViewModel();
 
   // Mock Listing Data
   const listing = {

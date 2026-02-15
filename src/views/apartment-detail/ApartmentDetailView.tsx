@@ -1,4 +1,4 @@
-import { useBookingSubmitViewModel } from "../../view-models/useBookingSubmitViewModel";
+import { useBookingActionViewModel } from "../../view-models/actions/useBookingActionViewModel";
 import { useBookingViewModel } from "../../view-models/useBookingViewModel";
 import { useUserViewModel } from "../../view-models/useUserViewModel";
 import { ApartmentImageGridView } from "./components/ApartmentImageGridView";
@@ -6,9 +6,9 @@ import { ApartmentListingDetailsView } from "./components/ApartmentListingDetail
 import { BookingFormView } from "./components/BookingFormView";
 
 export const ApartmentDetailView = () => {
-  const bookingSubmitViewModel = useBookingSubmitViewModel();
+  const bookingActionViewModel = useBookingActionViewModel();
   const userViewModel = useUserViewModel();
-  const { listing } = bookingSubmitViewModel;
+  const { listing } = bookingActionViewModel;
   const bookingFormViewModel = useBookingViewModel(listing?.price || 0);
 
   return (
@@ -35,7 +35,7 @@ export const ApartmentDetailView = () => {
         <ApartmentListingDetailsView listing={listing!} />
         <div className="booking-sidebar">
           <BookingFormView
-            bookingViewModel={bookingSubmitViewModel}
+            bookingViewModel={bookingActionViewModel}
             userViewModel={userViewModel}
             bookingFormViewModel={bookingFormViewModel}
           />
